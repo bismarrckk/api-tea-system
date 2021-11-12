@@ -1,0 +1,94 @@
+package com.teafarm.production.web.dto;
+
+
+
+import java.util.Date;
+
+import javax.validation.constraints.Min;
+
+import com.teafarm.production.entity.Account;
+import com.teafarm.production.entity.Company;
+import com.teafarm.production.entity.Employee;
+
+public class WeightDto {
+	private int id;
+	
+	private double quantity;
+	
+	private Date forDate;
+	
+	private Company company;
+	
+	private Employee employee;
+	
+	private Account account;
+
+	
+	public WeightDto() {
+		super();
+	}
+		
+
+	public WeightDto(int id, double quantity, Date forDate, Company company, Employee employee, Account account) {
+		super();
+		this.id = id;
+		this.quantity = quantity;
+		this.forDate = forDate;
+		this.company = company;
+		this.employee = employee;
+		this.account = account;
+	}
+
+
+
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
+	}
+
+	public Date getForDate() {
+		return forDate;
+	}
+
+	public void setForDate(Date forDate) {
+		this.forDate = forDate;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+	
+	
+}
