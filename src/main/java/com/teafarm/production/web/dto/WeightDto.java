@@ -21,22 +21,20 @@ public class WeightDto {
 	
 	private Employee employee;
 	
-	private Account account;
-
 	
 	public WeightDto() {
 		super();
 	}
 		
 
-	public WeightDto(int id, double quantity, Date forDate, Company company, Employee employee, Account account) {
+	public WeightDto(int id, double quantity, Date forDate, Company company, Employee employee) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.forDate = forDate;
 		this.company = company;
 		this.employee = employee;
-		this.account = account;
+	
 	}
 
 
@@ -82,13 +80,7 @@ public class WeightDto {
 		this.employee = employee;
 	}
 
-	public Account getAccount() {
-		return account;
-	}
 
-	public void setAccount(Account account) {
-		this.account = account;
-	}
 	
 	
 }

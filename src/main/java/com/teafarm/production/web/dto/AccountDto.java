@@ -6,8 +6,6 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.teafarm.production.entity.Employee;
 import com.teafarm.production.entity.User;
 

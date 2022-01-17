@@ -14,9 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 @Table(name="companies")
 public class Company {
@@ -27,20 +24,13 @@ public class Company {
 	@Column(name="reg_number")
 	private String regNumber;
 	private double rate;
-	@JsonBackReference(value="user_companies")
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id")
 	private User user;
-	@JsonBackReference(value="account_companies")
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="account_id")
-	private Account account;
-	@JsonManagedReference(value="weight_company")
 	@OneToMany(mappedBy="company",cascade= {
 			CascadeType.ALL
 	})
 	private List<Weight> weight;
-	@JsonManagedReference(value="company_cards")
 	@OneToMany(mappedBy="company",cascade= {
 			CascadeType.ALL
 	})
@@ -50,15 +40,19 @@ public class Company {
 		super();
 	}
 
-	public Company(int id, String name, String regNumber, double rate, User user, Account account) {
+	
+
+	public Company(int id, String name, String regNumber, double rate, User user) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.regNumber = regNumber;
 		this.rate = rate;
 		this.user = user;
-		this.account = account;
+		
 	}
+
+
 
 	public int getId() {
 		return id;
@@ -98,14 +92,6 @@ public class Company {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
 	}
 
 	public List<Weight> getWeight() {

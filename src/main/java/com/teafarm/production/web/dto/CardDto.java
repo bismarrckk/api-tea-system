@@ -4,7 +4,6 @@ import java.sql.Date;
 
 import javax.validation.constraints.Min;
 
-import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.Company;
 
 public class CardDto {
@@ -12,8 +11,7 @@ public class CardDto {
 	private double quantity;
 	private Date forDate;
 	private Company company;
-	private Account account;
-	
+		
 	public CardDto() {
 		super();
 	}
@@ -42,13 +40,7 @@ public class CardDto {
 		this.company = company;
 	}
 
-	public Account getAccount() {
-		return account;
-	}
 
-	public void setAccount(Account account) {
-		this.account = account;
-	}
 	
 	
 	

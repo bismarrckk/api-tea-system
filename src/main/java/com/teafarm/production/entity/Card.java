@@ -27,21 +27,17 @@ public class Card {
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="company_id")
 	private Company company;
-	@JsonBackReference(value="account_cards")
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="account_id")
-	private Account account;
-	
+		
 	public Card() {
 		super();
 	}
-	public Card(int id, double quantity, Date forDate, Company company, Account account) {
+	public Card(int id, double quantity, Date forDate, Company company) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.forDate = forDate;
 		this.company = company;
-		this.account = account;
+		
 	}
 	public int getId() {
 		return id;
@@ -67,14 +63,7 @@ public class Card {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	
-	public Account getAccount() {
-		return account;
-	}
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-	
+
 	
 	
 	

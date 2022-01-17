@@ -43,11 +43,6 @@ public class User {
 	        CascadeType.ALL
 	    })
 	private List<Company> companies;
-	
-	@OneToMany(mappedBy="user", cascade = {
-	        CascadeType.ALL
-	    })
-	private List<Credit> credits;
 
 	@ManyToMany(fetch=FetchType.EAGER )
 	@JoinTable(
@@ -140,14 +135,6 @@ public class User {
 	}
 
 	
-	public List<Credit> getCredits() {
-		return credits;
-	}
-
-	public void setCredits(List<Credit> credits) {
-		this.credits = credits;
-	}
-
 	public Collection<Role> getRoles() {
 		return roles;
 	}

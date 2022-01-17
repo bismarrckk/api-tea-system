@@ -8,7 +8,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.Card;
 import com.teafarm.production.entity.User;
 import com.teafarm.production.entity.Weight;
@@ -22,7 +21,6 @@ public class CompanyDto {
 	@Min(value = 4, message = "Rate should not be less than 3")
 	private double rate;
 	private User user;
-	private Account account;
 	private List<Weight> weight;
 	private List<Card> card;
 	
@@ -62,13 +60,6 @@ public class CompanyDto {
 		this.user = user;
 	}
 
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
 
 	public List<Weight> getWeight() {
 		return weight;

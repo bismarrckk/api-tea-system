@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="weight")
@@ -25,32 +24,29 @@ public class Weight {
 	private double quantity;
 	@Column(name="for_date")
 	private Date forDate;
-	@JsonBackReference(value="weight_company")
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="company_id")
 	private Company company;
-	@JsonBackReference(value="weight_employee")
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="employee_id")
 	private Employee employee;
-	@JsonBackReference(value="weight_account")
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="account_id")
-	private Account account;
+	
 	
 	public Weight() {
 		super();
 	}
-	public Weight(int id, double quantity, Date forDate, Company company, Employee employee, Account account) {
+	
+	
+	public Weight(int id, double quantity, Date forDate, Company company, Employee employee) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.forDate = forDate;
 		this.company = company;
 		this.employee = employee;
-		this.account = account;
 	}
-	
+
+
 	public int getId() {
 		return id;
 	}
@@ -81,13 +77,7 @@ public class Weight {
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
-	public Account getAccount() {
-		return account;
-	}
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-	
+
 	
 
 }

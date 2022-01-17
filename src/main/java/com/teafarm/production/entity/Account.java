@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="accounts")
@@ -30,55 +29,35 @@ public class Account {
 	private String contactPerson;
 	@Column(name="contact_phone")
 	private int contactPhone;
-	@JsonManagedReference(value="account_users")
 	@OneToMany(mappedBy = "account", cascade = {
 	        CascadeType.ALL
 	    })
 	private List<User> users;
-	@JsonManagedReference(value="employee_account")
 	@OneToMany(mappedBy = "account", cascade = {
 	        CascadeType.ALL
 	    })
 	private List<Employee> employees;
-	
-	@JsonManagedReference(value="account_companies")
-	@OneToMany(mappedBy = "account", cascade = {
-	        CascadeType.ALL
-	    })
-	private List<Company> companies;
-	
-	@JsonManagedReference(value="weight_account")
-	@OneToMany(mappedBy="account",cascade= {
-			CascadeType.ALL
-	})
-	private List<Weight> weight;
-	
-	@JsonManagedReference(value="account_cards")
-	@OneToMany(mappedBy="account",cascade= {
-			CascadeType.ALL
-	})
-	private List<Card> card;
-	@OneToMany(mappedBy="account",cascade= {
-			CascadeType.ALL
-	})
-	private List<Credit> credits;
-	
+		
 	public Account() {
 		super();
 	}
 	
-	public Account(int id, String name, boolean status, Date regDate,String contactPerson,int contactPhone,Date updatedAt) {
+	
+	
+	
+	public Account(int id, String name, boolean status, Date regDate, Date updatedAt, String contactPerson,
+			int contactPhone) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.status = status;
 		this.regDate = regDate;
-		this.contactPerson=contactPerson;
-		this.contactPhone=contactPhone;
-		this.updatedAt=updatedAt;
+		this.updatedAt = updatedAt;
+		this.contactPerson = contactPerson;
+		this.contactPhone = contactPhone;
+		
 	}
-	
-	
+
 	public int getId() {
 		return id;
 	}
@@ -144,40 +123,6 @@ public class Account {
 	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
 	}
-
-	public List<Company> getCompanies() {
-		return companies;
-	}
-
-	public void setCompanies(List<Company> companies) {
-		this.companies = companies;
-	}
-
-	public List<Weight> getWeight() {
-		return weight;
-	}
-
-	public void setWeight(List<Weight> weight) {
-		this.weight = weight;
-	}
-
-	public List<Card> getCard() {
-		return card;
-	}
-
-	public void setCard(List<Card> card) {
-		this.card = card;
-	}
-
-	public List<Credit> getCredits() {
-		return credits;
-	}
-
-	public void setCredits(List<Credit> credits) {
-		this.credits = credits;
-	}
-	
-	
 	
 	
 }

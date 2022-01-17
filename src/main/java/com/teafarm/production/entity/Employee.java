@@ -15,9 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 @Table(name="employees")
 public class Employee {
@@ -29,11 +26,9 @@ public class Employee {
 	private boolean status;
 	@Column(name="reg_date")
 	private Date regDate;
-	@JsonBackReference(value="employee_account")
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="account_id")
 	private Account account;
-	@JsonManagedReference(value="weight_employee")
 	@OneToMany(mappedBy="employee",cascade= {
 			CascadeType.ALL
 	})
@@ -52,14 +47,7 @@ public class Employee {
 		this.regDate = regDate;
 		this.account = account;
 	}
-	public Employee(String fullname, String role, boolean status, Date regDate, Account account) {
-		super();
-		this.fullname = fullname;
-		this.role = role;
-		this.status = status;
-		this.regDate = regDate;
-		this.account = account;
-	}
+
 	public Employee() {
 		super();
 	}

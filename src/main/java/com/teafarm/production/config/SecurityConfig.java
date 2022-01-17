@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		.csrf().disable()
 		.addFilterAt(customFilter,UsernamePasswordAuthenticationFilter.class)
 		.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/accounts/**").hasRole("USER")
+		.antMatchers(HttpMethod.GET, "/accounts/**").hasAnyRole("USER","ADMIN")
 		.antMatchers(HttpMethod.POST, "/accounts").hasRole("ADMIN")
         .antMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
         .antMatchers(HttpMethod.PATCH, "/books/**").hasRole("ADMIN")
