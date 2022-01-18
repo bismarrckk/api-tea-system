@@ -26,7 +26,7 @@ import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.UserDto;
 
 @RestController
-@RequestMapping("/users/")
+@RequestMapping("/api/v1/users/")
 public class UserController {
 	@Autowired
 	UserService userService;
