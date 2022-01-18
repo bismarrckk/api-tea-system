@@ -27,8 +27,8 @@ public class Employee {
 	@Column(name="reg_date")
 	private Date regDate;
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="account_id")
-	private Account account;
+	@JoinColumn(name="user_id")
+	private User user;
 	@OneToMany(mappedBy="employee",cascade= {
 			CascadeType.ALL
 	})
@@ -38,14 +38,14 @@ public class Employee {
 	})
 	private List<Credit> credits;
 	
-	public Employee(int id, String fullname, String role, boolean status, Date regDate, Account account) {
+	public Employee(int id, String fullname, String role, boolean status, Date regDate, User user) {
 		super();
 		this.id = id;
 		this.fullname = fullname;
 		this.role = role;
 		this.status = status;
 		this.regDate = regDate;
-		this.account = account;
+		this.user = user;
 	}
 
 	public Employee() {
@@ -83,12 +83,15 @@ public class Employee {
 	public void setRegDate(Date regDate) {
 		this.regDate = regDate;
 	}
-	public Account getAccount() {
-		return account;
+	
+	public User getUser() {
+		return user;
 	}
-	public void setAccount(Account account) {
-		this.account = account;
+
+	public void setUser(User user) {
+		this.user = user;
 	}
+
 	public List<Weight> getWeight() {
 		return weight;
 	}

@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.User;
 import com.teafarm.production.exception.ResourceNotFoundException;
-import com.teafarm.production.service.AccountService;
 import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.UserDto;
 
@@ -34,8 +32,6 @@ public class UserController {
 	UserService userService;
 	@Autowired
 	ModelMapper modelMapper;
-	@Autowired
-	AccountService accService;
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
 	
@@ -51,18 +47,16 @@ public class UserController {
 		UserDto userResponse=modelMapper.map(user, UserDto.class);
 		return new ResponseEntity<>(userResponse,HttpStatus.OK);
 	}
-	@PostMapping("/save/{accountId}")
-	public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto,@PathVariable(name="accountId") int accountId)
+	@PostMapping
+	public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto)
 			throws ResourceNotFoundException{
-		Account account=accService.getAccountById(accountId);
-		userDto.setAccount(account);
 		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		User userRequest=modelMapper.map(userDto, User.class);
 		User user=userService.addUser(userRequest);
 		UserDto userResponse=modelMapper.map(user, UserDto.class);
 		return new ResponseEntity<>(userResponse,HttpStatus.CREATED);
 	}
-	@PutMapping("/update/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		User userRequest=modelMapper.map(userDto,User.class);
@@ -71,7 +65,7 @@ public class UserController {
 		return new ResponseEntity<>(userResponse,HttpStatus.OK);
 		
 	}
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<User> deleteUser(@PathVariable(name="id") int id) throws ResourceNotFoundException{
 		userService.deleteUser(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

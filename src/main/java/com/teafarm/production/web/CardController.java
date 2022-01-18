@@ -42,7 +42,7 @@ public class CardController {
 		Card card=cardService.getCardById(id);
 		return new ResponseEntity<>(card, HttpStatus.OK);
 	}
-	@PostMapping("save")
+	@PostMapping
 	public ResponseEntity<CardDto> addCard(@RequestBody CardDto cardDto) {
 		//convert Dto to Entity
 		Card cardRequest=modelMapper.map(cardDto,Card.class);
@@ -52,7 +52,7 @@ public class CardController {
 		
 		return new ResponseEntity<CardDto>(cardResponse,HttpStatus.CREATED);
 	}
-	@PutMapping("update/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<CardDto> updateCard(@Valid @RequestBody CardDto cardDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Card cardRequest=modelMapper.map(cardDto,Card.class);
@@ -61,7 +61,7 @@ public class CardController {
 		return new ResponseEntity<>(cardResponse, HttpStatus.OK);
 		
 	}
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Card> deletePost(@PathVariable(name = "id") int id) throws ResourceNotFoundException {
 		
 		cardService.deleteCard(id);

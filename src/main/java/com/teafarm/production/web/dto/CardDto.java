@@ -15,6 +15,14 @@ public class CardDto {
 	public CardDto() {
 		super();
 	}
+	
+	public CardDto(@Min(value = 1, message = "Quantity should be greater than 1") double quantity, Date forDate,
+			Company company) {
+		super();
+		this.quantity = quantity;
+		this.forDate = forDate;
+		this.company = company;
+	}
 
 	public double getQuantity() {
 		return quantity;

@@ -14,12 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="users")
@@ -34,11 +30,6 @@ public class User {
 	private Date userLog;
 	private String password;
 	private boolean enabled;
-	@JsonBackReference(value="account_users")
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="account_id")
-	private Account account;
-	@JsonManagedReference(value="user_companies")
 	@OneToMany(mappedBy="user", cascade = {
 	        CascadeType.ALL
 	    })
@@ -57,7 +48,7 @@ public class User {
 		super();
 	}
 		
-	public User(int id, String fullname, int phone, String email, Date userLog, boolean enabled, Account account,String password)
+	public User(int id, String fullname, int phone, String email, Date userLog, boolean enabled,String password)
 			{
 		super();
 		this.id = id;
@@ -66,7 +57,6 @@ public class User {
 		this.email = email;
 		this.userLog = userLog;
 		this.enabled = enabled;
-		this.account = account;
 		this.password=password;
 	
 	}
@@ -109,10 +99,6 @@ public class User {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
-	public Account getAccount() {
-		return account;
-	}
 	
 	public String getPassword() {
 		return password;
@@ -120,10 +106,6 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
 	}
 
 	public List<Company> getCompanies() {

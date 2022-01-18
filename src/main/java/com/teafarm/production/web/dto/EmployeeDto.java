@@ -5,10 +5,7 @@ import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.teafarm.production.entity.Account;
+import com.teafarm.production.entity.User;
 
 
 public class EmployeeDto {
@@ -20,20 +17,20 @@ public class EmployeeDto {
 	private String role;
 	private boolean status;
 	private Date regDate;
-	private Account account;
+	private User user;
 		
 	public EmployeeDto() {
 		super();
 	}
 
-	public EmployeeDto(String fullname, String role, boolean status, Date regDate, Account account) {
+	public EmployeeDto(String fullname, String role, boolean status, Date regDate, User user) {
 		super();
 		
 		this.fullname = fullname;
 		this.role = role;
 		this.status = status;
 		this.regDate = regDate;
-		this.account = account;
+		this.user = user;
 	
 	}
 
@@ -70,13 +67,15 @@ public class EmployeeDto {
 		this.regDate = regDate;
 	}
 
-	public Account getAccount() {
-		return account;
+	public User getUser() {
+		return user;
 	}
 
-	public void setAccount(Account account) {
-		this.account = account;
+	public void setUser(User user) {
+		this.user = user;
 	}
+	
+	
 
 	
 }

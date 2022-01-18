@@ -1,8 +1,10 @@
 package com.teafarm.production.web;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -19,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teafarm.production.entity.Account;
+
 import com.teafarm.production.entity.Employee;
+import com.teafarm.production.entity.User;
 import com.teafarm.production.exception.ResourceNotFoundException;
-import com.teafarm.production.service.AccountService;
+
 import com.teafarm.production.service.EmployeeService;
+import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.EmployeeDto;
 
 @RestController
@@ -34,7 +38,7 @@ public class EmployeeController {
 	@Autowired
 	ModelMapper modelMapper;
 	@Autowired
-	AccountService accountService;
+	UserService userService;
 	
 	@GetMapping
 	public List<EmployeeDto> getAllEmployees(){
@@ -49,10 +53,13 @@ public class EmployeeController {
 		Employee employee= employeeService.getEmployeeById(id);
 		return new  ResponseEntity<>(employee,HttpStatus.OK);
 	}
-	@PostMapping("save")
-	public ResponseEntity<EmployeeDto> addEmployee(@Valid @RequestBody EmployeeDto employeeDto) throws ResourceNotFoundException{
-		Account account=accountService.getAccountById(1);
-		employeeDto.setAccount(account);
+	@PostMapping
+	public ResponseEntity<EmployeeDto> addEmployee(@Valid @RequestBody EmployeeDto employeeDto,HttpServletRequest request) 
+			throws ResourceNotFoundException{
+		Principal principal=request.getUserPrincipal();
+		String email=principal.getName();
+		User user=userService.getUserByEmail(email);
+		employeeDto.setUser(user);
 		Date date=new Date();
 		employeeDto.setRegDate(date);
 		Employee requestEmployee=modelMapper.map(employeeDto, Employee.class);
@@ -62,7 +69,7 @@ public class EmployeeController {
 		return new ResponseEntity<>(responseEmployee,HttpStatus.CREATED);
 	}
 	
-	@PutMapping("update/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto employeeDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Employee requestEmployee=modelMapper.map(employeeDto, Employee.class);
@@ -72,7 +79,7 @@ public class EmployeeController {
 	} 
 	
 	
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Employee> deleteEmployee(@PathVariable(name="id") int id) throws ResourceNotFoundException{
 		employeeService.deleteEmployee(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

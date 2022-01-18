@@ -4,9 +4,6 @@ package com.teafarm.production.web.dto;
 
 import java.util.Date;
 
-import javax.validation.constraints.Min;
-
-import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.Company;
 import com.teafarm.production.entity.Employee;
 
@@ -36,9 +33,6 @@ public class WeightDto {
 		this.employee = employee;
 	
 	}
-
-
-
 
 	public int getId() {
 		return id;

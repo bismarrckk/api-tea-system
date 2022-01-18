@@ -10,6 +10,7 @@ import com.teafarm.production.exception.ResourceNotFoundException;
 public interface UserService extends UserDetailsService {
 	List<User> getAllUsers();
 	User addUser(User user);
+	User getUserByEmail(String email);
 	User updateUser(int id,User user) throws ResourceNotFoundException;
 	void deleteUser(int id) throws ResourceNotFoundException;
 	User getUserById(int id) throws ResourceNotFoundException;

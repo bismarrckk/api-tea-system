@@ -27,6 +27,17 @@ public class CompanyDto {
 	public CompanyDto() {
 		super();
 	}
+	
+	public CompanyDto(
+			@NotEmpty(message = "Account name should not be null") @Size(min = 4, message = "Company name should have at least 3 characters") String name,
+			@NotEmpty(message = "Registration number should not be null") String regNumber,
+			@Min(value = 4, message = "Rate should not be less than 3") double rate, User user) {
+		super();
+		this.name = name;
+		this.regNumber = regNumber;
+		this.rate = rate;
+		this.user = user;
+	}
 
 	public String getName() {
 		return name;

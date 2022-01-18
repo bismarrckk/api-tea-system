@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import com.teafarm.production.entity.Account;
 
 public class UserDto {
 
@@ -23,11 +22,26 @@ public class UserDto {
 	@NotEmpty(message = "Password should not be null")
 	@Size(min = 8, message = "Password should have at least 8 characters")
 	private String password;
-	private Account account;
 
 	
 	public UserDto() {
 		super();
+	}
+
+	
+	public UserDto(int id,
+			@NotEmpty(message = "Fullname should not be null") @Size(min = 4, message = "Fullname should have at least 4 characters") String fullname,
+			int phone, @NotEmpty(message = "Email should not be null") @Email String email, Date userLog,
+			boolean enabled,
+			@NotEmpty(message = "Password should not be null") @Size(min = 8, message = "Password should have at least 8 characters") String password) {
+		super();
+		this.id = id;
+		this.fullname = fullname;
+		this.phone = phone;
+		this.email = email;
+		this.userLog = userLog;
+		this.enabled = enabled;
+		this.password = password;
 	}
 
 
@@ -80,15 +94,13 @@ public class UserDto {
 		this.userLog = userLog;
 	}
 
-
-
-	public boolean isEenabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 
 
-	public void setEenabled(boolean eenabled) {
-		enabled = eenabled;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 
@@ -102,15 +114,7 @@ public class UserDto {
 	}
 
 
-	public Account getAccount() {
-		return account;
-	}
 
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-	
-	
+		
 	
 }

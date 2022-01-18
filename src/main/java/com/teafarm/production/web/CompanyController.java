@@ -44,7 +44,7 @@ public class CompanyController {
 		Company company=companyService.getCompanyById(id);
 		return new ResponseEntity<>(company, HttpStatus.OK);
 	}
-	@PostMapping("save")
+	@PostMapping
 	public ResponseEntity<CompanyDto> addCompany(@Valid @RequestBody CompanyDto companyDto) {
 		//convert Dto to Entity
 		Company companyRequest=modelMapper.map(companyDto,Company.class);
@@ -54,7 +54,7 @@ public class CompanyController {
 		
 		return new ResponseEntity<CompanyDto>(companyResponse,HttpStatus.CREATED);
 	}
-	@PutMapping("update/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<CompanyDto> updateCompany(@Valid @RequestBody CompanyDto companyDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Company companyRequest=modelMapper.map(companyDto,Company.class);
@@ -63,7 +63,7 @@ public class CompanyController {
 		return new ResponseEntity<>(companyResponse, HttpStatus.OK);
 		
 	}
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Company> deletePost(@PathVariable(name = "id") int id) throws ResourceNotFoundException {
 		
 		companyService.deleteCompany(id);
