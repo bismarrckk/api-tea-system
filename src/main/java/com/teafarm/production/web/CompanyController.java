@@ -31,7 +31,8 @@ public class CompanyController {
 	CompanyService companyService;
 	@Autowired 
 	ModelMapper modelMapper;
-	
+	@Autowired 
+	UserService userService;
 	@GetMapping
 	public List<CompanyDto> getAllCompanies(){
 		List<Company> requestCompany=companyService.getAllCompanies();
