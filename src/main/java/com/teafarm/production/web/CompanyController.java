@@ -1,9 +1,11 @@
 package com.teafarm.production.web;
 
+import java.security.Principal;
 import java.util.List;
 
-import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teafarm.production.entity.Company;
+import com.teafarm.production.entity.User;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.service.CompanyService;
-import com.teafarm.production.web.dto.CompanyDto;
 import com.teafarm.production.service.UserService;
+import com.teafarm.production.web.dto.CompanyDto;
 
 
 @RestController
@@ -31,9 +34,10 @@ public class CompanyController {
 	@Autowired
 	CompanyService companyService;
 	@Autowired 
-	ModelMapper modelMapper;
-	@Autowired 
 	UserService userService;
+	@Autowired 
+	ModelMapper modelMapper;
+	
 	@GetMapping
 	public List<CompanyDto> getAllCompanies(){
 		List<Company> requestCompany=companyService.getAllCompanies();
