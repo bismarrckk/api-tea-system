@@ -45,7 +45,11 @@ public class CompanyController {
 		return new ResponseEntity<>(company, HttpStatus.OK);
 	}
 	@PostMapping
-	public ResponseEntity<CompanyDto> addCompany(@Valid @RequestBody CompanyDto companyDto) {
+	public ResponseEntity<CompanyDto> addCompany(@Valid @RequestBody CompanyDto companyDto,HttpServletRequest request) {
+		Principal principal=request.getUserPrincipal();
+		String email=principal.getName();		
+		User user=userService.getUserByEmail(email);
+		companyDto.setUser(user);
 		//convert Dto to Entity
 		Company companyRequest=modelMapper.map(companyDto,Company.class);
 		Company company=companyService.addCompany(companyRequest);
