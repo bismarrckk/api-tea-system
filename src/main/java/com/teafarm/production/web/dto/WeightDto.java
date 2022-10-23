@@ -1,21 +1,14 @@
 package com.teafarm.production.web.dto;
 
-
-
-import java.util.Date;
-
+import java.sql.Date;
 import com.teafarm.production.entity.Company;
 import com.teafarm.production.entity.Employee;
 
 public class WeightDto {
 	private int id;
-	
 	private double quantity;
-	
 	private Date forDate;
-	
 	private Company company;
-	
 	private Employee employee;
 	
 	

@@ -1,7 +1,7 @@
 package com.teafarm.production.entity;
 
 import java.util.Collection;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,8 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="users")
@@ -24,17 +28,22 @@ public class User {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String fullname;
-	private int phone;
+	private long phone;
+	@Column(unique=true)
 	private String email;
 	@Column(name="user_log")
 	private Date userLog;
 	private String password;
 	private boolean enabled;
+	@JsonManagedReference(value="company-user")
 	@OneToMany(mappedBy="user", cascade = {
 	        CascadeType.ALL
 	    })
 	private List<Company> companies;
-
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="account_id")
+	private Account account;
+	
 	@ManyToMany(fetch=FetchType.EAGER )
 	@JoinTable(
 			name="users_roles",
@@ -48,7 +57,7 @@ public class User {
 		super();
 	}
 		
-	public User(int id, String fullname, int phone, String email, Date userLog, boolean enabled,String password)
+	public User(int id, String fullname, long phone, String email, Date userLog, boolean enabled,String password,Account account)
 			{
 		super();
 		this.id = id;
@@ -58,6 +67,7 @@ public class User {
 		this.userLog = userLog;
 		this.enabled = enabled;
 		this.password=password;
+		this.account=account;
 	
 	}
 	
@@ -73,10 +83,10 @@ public class User {
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
 	}
-	public int getPhone() {
+	public long getPhone() {
 		return phone;
 	}
-	public void setPhone(int phone) {
+	public void setPhone(long phone) {
 		this.phone = phone;
 	}
 	public String getEmail() {
@@ -124,8 +134,14 @@ public class User {
 	public void setRoles(Collection<Role> roles) {
 		this.roles = roles;
 	}
-	
-	
-	
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+		
 	
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.teafarm.production.entity.Company;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.CompanyRepo;
+import com.teafarm.production.web.dto.DailySummary;
+
 
 @Service
 public class CompanyServiceImpl  implements CompanyService{
@@ -49,6 +51,18 @@ public class CompanyServiceImpl  implements CompanyService{
 	public Company getCompanyById(int id) throws ResourceNotFoundException {
 		Company company=companyRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Company not found!!"));
 		return company;
+	}
+
+	@Override
+	public List<Company> getCompanyByAcc(int id) {
+		// TODO Auto-generated method stub
+		return companyRepo.findCompanyByAcc(id);
+	}
+
+	@Override
+	public List<DailySummary> getDailySummary(int id) {
+		// TODO Auto-generated method stub
+		return companyRepo.findDailySummary(id);
 	}
 
 }

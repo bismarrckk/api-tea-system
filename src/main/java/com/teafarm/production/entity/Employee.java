@@ -1,6 +1,6 @@
 package com.teafarm.production.entity;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name="employees")
 public class Employee {
@@ -22,30 +24,34 @@ public class Employee {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String fullname;
+	private long idNo;
 	private String role;
 	private boolean status;
 	@Column(name="reg_date")
 	private Date regDate;
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="user_id")
-	private User user;
+	@JoinColumn(name="account_id")
+	private Account account;
+	@JsonManagedReference(value="employee-weight")
 	@OneToMany(mappedBy="employee",cascade= {
 			CascadeType.ALL
 	})
 	private List<Weight> weight;
+	@JsonManagedReference(value="employee-credit")
 	@OneToMany(mappedBy="employee",cascade= {
 			CascadeType.ALL
 	})
 	private List<Credit> credits;
 	
-	public Employee(int id, String fullname, String role, boolean status, Date regDate, User user) {
+	public Employee(int id, String fullname, String role, boolean status, Date regDate, Account account,long idNo) {
 		super();
 		this.id = id;
 		this.fullname = fullname;
 		this.role = role;
 		this.status = status;
 		this.regDate = regDate;
-		this.user = user;
+		this.account = account;
+		this.idNo=idNo;
 	}
 
 	public Employee() {
@@ -84,12 +90,12 @@ public class Employee {
 		this.regDate = regDate;
 	}
 	
-	public User getUser() {
-		return user;
+	public Account getAccount() {
+		return account;
 	}
-
-	public void setUser(User user) {
-		this.user = user;
+	
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public List<Weight> getWeight() {
@@ -103,6 +109,14 @@ public class Employee {
 	}
 	public void setCredits(List<Credit> credits) {
 		this.credits = credits;
+	}
+
+	public long getIdNo() {
+		return idNo;
+	}
+
+	public void setIdNo(long idNo) {
+		this.idNo = idNo;
 	}
 	
 	

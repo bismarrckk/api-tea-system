@@ -23,7 +23,7 @@ public class Card {
 	private double quantity;
 	@Column(name="for_date")
 	private Date forDate;
-	@JsonBackReference(value="company_cards")
+	@JsonBackReference(value="company-cards")
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="company_id")
 	private Company company;

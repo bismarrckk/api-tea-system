@@ -1,40 +1,50 @@
 package com.teafarm.production.web.dto;
 
-import java.util.Date;
-
-
+import java.sql.Date;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import com.teafarm.production.entity.User;
-
+import com.teafarm.production.entity.Account;
 
 public class EmployeeDto {
 
 
+	
+	private int id;
 	@NotEmpty
 	@Size(min = 4, message = "Employee name should have at least 4 characters")
 	private String fullname;
 	private String role;
 	private boolean status;
 	private Date regDate;
-	private User user;
-		
+	private Account account;
+	private long idNo;
+	private int accId;
 	public EmployeeDto() {
 		super();
 	}
 
-	public EmployeeDto(String fullname, String role, boolean status, Date regDate, User user) {
+	public EmployeeDto(int id,String fullname, String role, boolean status, Date regDate,
+			Account account,long idNo,int accId) {
 		super();
-		
+		this.id=id;
 		this.fullname = fullname;
 		this.role = role;
 		this.status = status;
 		this.regDate = regDate;
-		this.user = user;
-	
+		this.account = account;
+		this.idNo=idNo;
+		this.accId=accId;
 	}
 
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getFullname() {
 		return fullname;
 	}
@@ -67,15 +77,30 @@ public class EmployeeDto {
 		this.regDate = regDate;
 	}
 
-	public User getUser() {
-		return user;
+	public Account getAccount() {
+		return account;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public long getIdNo() {
+		return idNo;
+	}
+
+	public void setIdNo(long idNo) {
+		this.idNo = idNo;
+	}
+
+	public int getAccId() {
+		return accId;
+	}
+
+	public void setAccId(int accId) {
+		this.accId = accId;
 	}
 	
 	
-
 	
 }

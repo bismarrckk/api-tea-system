@@ -3,8 +3,6 @@ package com.teafarm.production.web.dto;
 
 
 import java.util.List;
-
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -13,12 +11,12 @@ import com.teafarm.production.entity.User;
 import com.teafarm.production.entity.Weight;
 
 public class CompanyDto {
+	private int id;
 	@NotEmpty(message = "Account name should not be null")
-	@Size(min = 4, message = "Company name should have at least 3 characters")
+	@Size(min = 3, message = "Company name should have at least 3 characters")
 	private String name;
 	@NotEmpty(message = "Registration number should not be null")
 	private String regNumber;
-	@Min(value = 4, message = "Rate should not be less than 3")
 	private double rate;
 	private User user;
 	private List<Weight> weight;
@@ -29,14 +27,24 @@ public class CompanyDto {
 	}
 	
 	public CompanyDto(
-			@NotEmpty(message = "Account name should not be null") @Size(min = 4, message = "Company name should have at least 3 characters") String name,
-			@NotEmpty(message = "Registration number should not be null") String regNumber,
-			@Min(value = 4, message = "Rate should not be less than 3") double rate, User user) {
+			int id,@NotEmpty(message = "Account name should not be null") @Size(min = 4, message = "Company name should have at least 3 characters") String name,
+			@NotEmpty(message = "Registration number should not be null") String regNumber,double rate, User user) {
 		super();
+		this.id=id;
 		this.name = name;
 		this.regNumber = regNumber;
 		this.rate = rate;
 		this.user = user;
+	}
+	
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {

@@ -11,4 +11,5 @@ public interface CardService {
 	Card updateCard(int id,Card card) throws ResourceNotFoundException;
 	void deleteCard(int id) throws ResourceNotFoundException;
 	Card getCardById(int id) throws ResourceNotFoundException;
+	List<Card> getCardByAcc(int id);
 }

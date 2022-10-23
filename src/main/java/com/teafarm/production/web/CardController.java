@@ -7,8 +7,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,8 @@ import com.teafarm.production.service.CardService;
 import com.teafarm.production.web.dto.CardDto;
 
 @RestController
-@RequestMapping("/api/v1/card/")
+@RequestMapping("/api/v1/cards/")
+@CrossOrigin("http://localhost:8080/")
 public class CardController {
 	@Autowired
 	CardService cardService;
@@ -37,34 +37,39 @@ public class CardController {
 		List<CardDto> cardList=modelMapper.map(card, new TypeToken<List<CardDto>>() {}.getType());
 		return cardList;
 	}
+	@GetMapping("account/{accId}")
+	public List<CardDto> getCardByAcc(@PathVariable(name="accId") int accId){
+		List<Card> card= cardService.getCardByAcc(accId);
+		List<CardDto> cardList=modelMapper.map(card, new TypeToken<List<CardDto>>() {}.getType());
+		return cardList;
+	}
 	@GetMapping("{id}")
-	public ResponseEntity<Card> getCardById(@PathVariable(value="id") int id) throws ResourceNotFoundException{
+	public Card getCardById(@PathVariable(value="id") int id) throws ResourceNotFoundException{
 		Card card=cardService.getCardById(id);
-		return new ResponseEntity<>(card, HttpStatus.OK);
+		return card;
 	}
 	@PostMapping
-	public ResponseEntity<CardDto> addCard(@RequestBody CardDto cardDto) {
+	public CardDto addCard(@RequestBody CardDto cardDto) {
 		//convert Dto to Entity
 		Card cardRequest=modelMapper.map(cardDto,Card.class);
 		Card card=cardService.addCard(cardRequest);
 		//convert Entity to Dto
 		CardDto cardResponse=modelMapper.map(card, CardDto.class);
-		
-		return new ResponseEntity<CardDto>(cardResponse,HttpStatus.CREATED);
+		return cardResponse;
 	}
 	@PutMapping("{id}")
-	public ResponseEntity<CardDto> updateCard(@Valid @RequestBody CardDto cardDto,@PathVariable(name="id") int id)
+	public CardDto updateCard(@Valid @RequestBody CardDto cardDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Card cardRequest=modelMapper.map(cardDto,Card.class);
 		Card card=cardService.updateCard(id, cardRequest);
 		CardDto cardResponse=modelMapper.map(card, CardDto.class);
-		return new ResponseEntity<>(cardResponse, HttpStatus.OK);
+		return cardResponse;
 		
 	}
 	@DeleteMapping("{id}")
-	public ResponseEntity<Card> deletePost(@PathVariable(name = "id") int id) throws ResourceNotFoundException {
+	public void deletePost(@PathVariable(name = "id") int id) throws ResourceNotFoundException {
 		
 		cardService.deleteCard(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
 	}
 }

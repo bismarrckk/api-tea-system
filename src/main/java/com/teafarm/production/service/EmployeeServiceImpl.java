@@ -2,17 +2,24 @@ package com.teafarm.production.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.Employee;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.EmployeeRepo;
+import com.teafarm.production.web.dto.EmployeeDto;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired 
 	EmployeeRepo employeeRepo;
+	@Autowired
+	AccountService accService;
+	@Autowired
+	ModelMapper modelMapper;
 	@Override
 	public List<Employee> getAllEmployees() {
 
@@ -20,8 +27,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee addEmployee(Employee employee) {
+	public Employee addEmployee(EmployeeDto employeeDto) {
 		
+		employeeDto.setStatus(true);
+		Employee employee=modelMapper.map(employeeDto, Employee.class);
 		return employeeRepo.save(employee);
 	}
 
@@ -47,6 +56,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee=employeeRepo.findById(id).
 				orElseThrow(()->new ResourceNotFoundException("Employee not found!!"));
 		return employee;
+	}
+
+	@Override
+	public List<Employee> getEmployeesByAccount(Account account) {
+		// TODO Auto-generated method stub
+		return employeeRepo.findByAccount(account);
 	}
 
 }

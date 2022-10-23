@@ -50,4 +50,10 @@ public class CardServiceImpl implements CardService {
 		return card;
 	}
 
+	@Override
+	public List<Card> getCardByAcc(int id) {
+		// TODO Auto-generated method stub
+		return cardRepo.findCardByAcc(id);
+	}
+
 }

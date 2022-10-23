@@ -1,5 +1,6 @@
 package com.teafarm.production.service;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.teafarm.production.entity.Weight;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.WeightRepo;
+import com.teafarm.production.web.dto.Salary;
 @Service
 public class WeightServiceImpl implements WeightService{
 	@Autowired
@@ -52,5 +54,19 @@ public class WeightServiceImpl implements WeightService{
 		
 		return weight;
 	}
+
+	@Override
+	public List<Weight> getWeightByAccId(int id) {
+		// TODO Auto-generated method stub
+		return weightRepo.findWeightByAcc(id);
+	}
+
+	@Override
+	public List<Salary> getSalary(Date start, Date end,int id) {
+		// TODO Auto-generated method stub
+		return weightRepo.findSalary(start, end,id);
+	}
+	
+	
 
 }

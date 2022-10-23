@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import com.teafarm.production.entity.Company;
 
 public class CardDto {
+	private int id;
 	@Min(value=1,message="Quantity should be greater than 1")
 	private double quantity;
 	private Date forDate;
@@ -16,12 +17,22 @@ public class CardDto {
 		super();
 	}
 	
-	public CardDto(@Min(value = 1, message = "Quantity should be greater than 1") double quantity, Date forDate,
+	public CardDto(int id,@Min(value = 1, message = "Quantity should be greater than 1") double quantity, Date forDate,
 			Company company) {
 		super();
+		this.id=id;
 		this.quantity = quantity;
 		this.forDate = forDate;
 		this.company = company;
+	}
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public double getQuantity() {

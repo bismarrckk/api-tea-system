@@ -1,6 +1,7 @@
 package com.teafarm.production.web;
 
 
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,9 +9,8 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,20 +20,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.User;
 import com.teafarm.production.exception.ResourceNotFoundException;
+import com.teafarm.production.service.AccountService;
 import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.UserDto;
 
-@RestController
+@RestController    
 @RequestMapping("/api/v1/users/")
+@CrossOrigin("http://localhost:8080/")
 public class UserController {
 	@Autowired
 	UserService userService;
 	@Autowired
 	ModelMapper modelMapper;
 	@Autowired
-	BCryptPasswordEncoder passwordEncoder;
+	AccountService accService;
+
 	
 	@GetMapping
 	public List<UserDto> getAllUsers(){
@@ -41,34 +45,76 @@ public class UserController {
 		List<UserDto> usersList=modelMapper.map(users,new TypeToken<List<UserDto>>() {}.getType());
 		return usersList;
 	}
+	@GetMapping("auth")
+	public Object getAuthUser(Authentication auth){
+		if(auth != null) {
+		return auth.getPrincipal();
+		}
+		return "auth is null";
+	}
 	@GetMapping("{id}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public UserDto getUserById(@PathVariable(name="id") int id) throws ResourceNotFoundException{
 		User user=userService.getUserById(id);
 		UserDto userResponse=modelMapper.map(user, UserDto.class);
-		return new ResponseEntity<>(userResponse,HttpStatus.OK);
+		return userResponse;
 	}
+	@GetMapping("email/{email}")
+	public boolean getUserByEmail(@PathVariable(name="email") String email){
+		User user=userService.getUserByEmail(email);
+		if(user!=null) {
+			return false;
+		}
+		return true;
+	}
+	@GetMapping("account/{accountId}")
+	public List<User> getUsersByAccount(@PathVariable(name="accountId") int accountId)
+			throws ResourceNotFoundException{
+		Account acc=accService.getAccountById(accountId);
+		List<User> users=userService.getUserByAccount(acc);
+		return users;
+		
+	}
+	//user account
 	@PostMapping
-	public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto)
+	public UserDto addUserAccount(@Valid @RequestBody UserDto userDto)
 			throws ResourceNotFoundException{
-		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		User userRequest=modelMapper.map(userDto, User.class);
-		User user=userService.addUser(userRequest);
-		UserDto userResponse=modelMapper.map(user, UserDto.class);
-		return new ResponseEntity<>(userResponse,HttpStatus.CREATED);
+		User user=userService.getUserByEmail(userDto.getEmail());
+		if(user!=null) {
+			return  new UserDto();
+		}
+		Account account=accService.getAccountByName(userDto.getAccountName());
+		userDto.setAccount(account);
+		User userr=userService.addUser(userDto);
+		UserDto userResponse=modelMapper.map(userr,UserDto.class);
+		return userResponse;
 	}
-	@PutMapping("{id}")
-	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,@PathVariable(name="id") int id)
+	//user
+	@PostMapping("user")
+	public UserDto addUser(@Valid @RequestBody UserDto userDto)
 			throws ResourceNotFoundException{
-		User userRequest=modelMapper.map(userDto,User.class);
-		User user=userService.updateUser(id, userRequest);
+		User user=userService.getUserByEmail(userDto.getEmail());
+		if(user!=null) {
+			return new UserDto();
+		}
+		Account account=accService.getAccountById(userDto.getAccId());
+		userDto.setAccount(account);
+		User userr=userService.addUser(userDto);
+		UserDto userResponse=modelMapper.map(userr, UserDto.class);
+		return userResponse;
+	}
+	
+	@PutMapping("{id}")
+	public UserDto updateUser(@PathVariable(name="id") int id,@Valid @RequestBody UserDto userDto){
+	
+		User user=userService.updateUser(userDto);
 		UserDto userResponse=modelMapper.map(user, UserDto.class);
-		return new ResponseEntity<>(userResponse,HttpStatus.OK);
+		return userResponse;
 		
 	}
 	@DeleteMapping("{id}")
-	public ResponseEntity<User> deleteUser(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public void deleteUser(@PathVariable(name="id") int id) throws ResourceNotFoundException{
 		userService.deleteUser(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	
 		
 	}
 	

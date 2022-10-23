@@ -1,7 +1,7 @@
 package com.teafarm.production.web;
 
-import java.security.Principal;
-import java.util.Date;
+
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,8 +10,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,17 +20,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.Employee;
-import com.teafarm.production.entity.User;
-import com.teafarm.production.exception.ResourceNotFoundException;
 
+import com.teafarm.production.exception.ResourceNotFoundException;
+import com.teafarm.production.service.AccountService;
 import com.teafarm.production.service.EmployeeService;
 import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.EmployeeDto;
 
 @RestController
 @RequestMapping("/api/v1/employees/")
+@CrossOrigin("http://localhost:8080/")
 public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
@@ -39,6 +39,8 @@ public class EmployeeController {
 	ModelMapper modelMapper;
 	@Autowired
 	UserService userService;
+	@Autowired
+	AccountService accService;
 	
 	@GetMapping
 	public List<EmployeeDto> getAllEmployees(){
@@ -49,40 +51,41 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("{id}")
-	public ResponseEntity<Employee> getEmployeeById(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public Employee getEmployeeById(@PathVariable(name="id") int id) throws ResourceNotFoundException{
 		Employee employee= employeeService.getEmployeeById(id);
-		return new  ResponseEntity<>(employee,HttpStatus.OK);
+		return employee;
+	}
+	@GetMapping("account/{accountId}")
+	public List<Employee> getEmployeesByAccount(@PathVariable(name="accountId") int accountId) throws ResourceNotFoundException{
+		Account account=accService.getAccountById(accountId);
+		List<Employee> employees=employeeService.getEmployeesByAccount(account);
+		return employees;
 	}
 	@PostMapping
-	public ResponseEntity<EmployeeDto> addEmployee(@Valid @RequestBody EmployeeDto employeeDto,HttpServletRequest request) 
-			throws ResourceNotFoundException{
-		Principal principal=request.getUserPrincipal();
-		String email=principal.getName();
-		User user=userService.getUserByEmail(email);
-		employeeDto.setUser(user);
-		Date date=new Date();
-		employeeDto.setRegDate(date);
-		Employee requestEmployee=modelMapper.map(employeeDto, Employee.class);
-		Employee employee=employeeService.addEmployee(requestEmployee);
+	public EmployeeDto addEmployee(@Valid @RequestBody EmployeeDto employeeDto,HttpServletRequest request) 
+			throws ResourceNotFoundException, ParseException{
+		Account account=accService.getAccountById(employeeDto.getAccId());
+		employeeDto.setAccount(account);
+		Employee employee=employeeService.addEmployee(employeeDto);
 		EmployeeDto responseEmployee=modelMapper.map(employee,EmployeeDto.class);
 		
-		return new ResponseEntity<>(responseEmployee,HttpStatus.CREATED);
+		return responseEmployee;
 	}
 	
 	@PutMapping("{id}")
-	public ResponseEntity<EmployeeDto> updateEmployee(@Valid @RequestBody EmployeeDto employeeDto,@PathVariable(name="id") int id)
+	public EmployeeDto updateEmployee(@Valid @RequestBody EmployeeDto employeeDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Employee requestEmployee=modelMapper.map(employeeDto, Employee.class);
 		Employee employee=employeeService.updateEmployee(id, requestEmployee);
 		EmployeeDto responseEmployee=modelMapper.map(employee,EmployeeDto.class);
-		return new ResponseEntity<>(responseEmployee,HttpStatus.OK);
+		return responseEmployee;
 	} 
 	
 	
 	@DeleteMapping("{id}")
-	public ResponseEntity<Employee> deleteEmployee(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public void deleteEmployee(@PathVariable(name="id") int id) throws ResourceNotFoundException{
 		employeeService.deleteEmployee(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	
 	}
 		
 }

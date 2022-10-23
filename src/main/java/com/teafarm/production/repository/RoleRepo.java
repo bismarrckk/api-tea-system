@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.teafarm.production.entity.Role;
 @Repository
 public interface RoleRepo extends JpaRepository<Role,Integer>{
-	
+	Role findByName(String name);
 }
