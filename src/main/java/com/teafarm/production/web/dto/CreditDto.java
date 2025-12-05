@@ -12,20 +12,30 @@ public class CreditDto {
 	private String commodity;
 	private double price;
 	private Date forDate;
-	private Employee employee;
+	private String firstName;
+	private String lastName;
+	private int employeeId;
 	
 	public CreditDto() {
 		super();
 	}
+	
+	
+
 	public CreditDto(int id, @NotEmpty(message = "Commodity should not be null") String commodity, double price,
-			Date forDate, Employee employee) {
+			Date forDate, String firstName, String lastName, int employeeId) {
 		super();
 		this.id = id;
 		this.commodity = commodity;
 		this.price = price;
 		this.forDate = forDate;
-		this.employee = employee;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.employeeId = employeeId;
 	}
+
+
+
 	public int getId() {
 		return id;
 	}
@@ -50,12 +60,41 @@ public class CreditDto {
 	public void setForDate(Date forDate) {
 		this.forDate = forDate;
 	}
-	public Employee getEmployee() {
-		return employee;
+
+	
+
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+
+
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
+
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
+	
 	
 	
 	

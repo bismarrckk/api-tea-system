@@ -1,5 +1,7 @@
 package com.teafarm.production.service;
 
+
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.teafarm.production.entity.Card;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.CardRepo;
+import com.teafarm.production.web.dto.GrowersSummary;
 
 @Service
 public class CardServiceImpl implements CardService {
@@ -55,5 +58,13 @@ public class CardServiceImpl implements CardService {
 		// TODO Auto-generated method stub
 		return cardRepo.findCardByAcc(id);
 	}
+
+	@Override
+	public List<GrowersSummary> getGrowersSummary(int id, Date start, Date end) {
+		// TODO Auto-generated method stub
+		return cardRepo.findGrowersSummary(id,start,end);
+	}
+
+	
 
 }

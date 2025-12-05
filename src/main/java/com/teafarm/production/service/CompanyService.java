@@ -14,5 +14,5 @@ public interface CompanyService {
 	void deleteCompany(int id) throws ResourceNotFoundException;
 	Company getCompanyById(int id) throws ResourceNotFoundException;
 	List<Company> getCompanyByAcc(int id);
-	List<DailySummary> getDailySummary(int id);
+	
 }

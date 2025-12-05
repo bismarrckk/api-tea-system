@@ -1,7 +1,10 @@
 package com.teafarm.production.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +37,40 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User addUser(UserDto userDto) {
-		userDto.setEnabled(true);
-		Role role=roleRepo.findByName(userDto.getRole());
-		userDto.setRoles(Arrays.asList(role));
-		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		User user=modelMapper.map(userDto, User.class);
-		
+	public User addUser(User user) {
+		Role role=roleRepo.findByName("OWNER");
+		List<Role> roles = new ArrayList<>();
+		roles.add(role);
+		user.setRoles(roles);
+		user.setEnabled(true);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+						
 		return userRepo.save(user);
 	}
 
 	@Override
-	public User updateUser(UserDto userDto) {
-		Role role=roleRepo.findByName(userDto.getRole());
-		userDto.setRoles(Arrays.asList(role));
-		User user=modelMapper.map(userDto, User.class);
-		return userRepo.save(user);
-				
+	public User updateUser(int id,UserDto userDto) throws ResourceNotFoundException {
+		
+		
+		User user=this.getUserById(id);
+		user.setEnabled(userDto.isEnabled());
+		user.setPhone(userDto.getPhone());
+		user.setFirstName(userDto.getFirstName());
+		user.setLastName(userDto.getLastName());
+		user.setPhone(userDto.getPhone());
+		Role role=roleRepo.findById(userDto.getRoleId()).get();
+		List<Role> roles = new ArrayList<>(user.getRoles());
+		if (!roles.contains(role)) {
+			if (roles.size() > 0) {
+			roles.set(0, role);  
+			}else {
+				roles.add(role);
+			}
+			user.setRoles(roles);
+			
+		}
+		
+		return userRepo.save(user);		
 	}
 
 	@Override

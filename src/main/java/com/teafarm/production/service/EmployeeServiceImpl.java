@@ -27,17 +27,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee addEmployee(EmployeeDto employeeDto) {
+	public Employee addEmployee(EmployeeDto employeeDto) throws ResourceNotFoundException {
+		Account account=accService.getAccountById(employeeDto.getAccId());
 		
 		employeeDto.setStatus(true);
 		Employee employee=modelMapper.map(employeeDto, Employee.class);
+		employee.setAccount(account);
 		return employeeRepo.save(employee);
 	}
 
 	@Override
 	public Employee updateEmployee(int id, Employee employee) throws ResourceNotFoundException {
 		Employee emp=getEmployeeById(id);
-		emp.setFullname(employee.getFullname());
+		emp.setFirstName(employee.getFirstName());
+		emp.setLastName(employee.getLastName());
 		emp.setRole(employee.getRole());
 		emp.setStatus(employee.isStatus());
 		return employeeRepo.save(emp);

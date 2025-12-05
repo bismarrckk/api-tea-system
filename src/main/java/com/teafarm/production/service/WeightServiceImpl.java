@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 import com.teafarm.production.entity.Weight;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.WeightRepo;
+import com.teafarm.production.web.dto.DailySummary;
 import com.teafarm.production.web.dto.Salary;
+import com.teafarm.production.web.dto.SalaryDue;
 @Service
 public class WeightServiceImpl implements WeightService{
 	@Autowired
 	WeightRepo weightRepo;
+	
 	
 	@Override
 	public List<Weight> getAllWeight() {
@@ -29,14 +32,10 @@ public class WeightServiceImpl implements WeightService{
 	}
 
 	@Override
-	public Weight updateWeight(int id, Weight weight) throws ResourceNotFoundException {
+	public Weight updateWeight(Weight weight) throws ResourceNotFoundException {
 		// TODO Auto-generated method stub
-		Weight selectedWeight=getWeightById(id);
-		selectedWeight.setCompany(weight.getCompany());
-		selectedWeight.setEmployee(weight.getEmployee());
-		selectedWeight.setForDate(weight.getForDate());
-		selectedWeight.setQuantity(weight.getQuantity());
-		return weightRepo.save(selectedWeight);
+	
+		return weightRepo.save(weight);
 	}
 
 	@Override
@@ -67,6 +66,16 @@ public class WeightServiceImpl implements WeightService{
 		return weightRepo.findSalary(start, end,id);
 	}
 	
-	
+	@Override
+	public List<DailySummary> getDailySummary(int id) {
+		// TODO Auto-generated method stub
+		return weightRepo.findDailySummary(id);
+	}
+
+	@Override
+	public List<SalaryDue> getSalaryDue(Date start, Date end, int id) {
+		// TODO Auto-generated method stub
+		return weightRepo.findPayPerUser(start, end, id);
+	}
 
 }

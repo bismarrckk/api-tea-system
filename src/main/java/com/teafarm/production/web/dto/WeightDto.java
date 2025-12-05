@@ -8,24 +8,36 @@ public class WeightDto {
 	private int id;
 	private double quantity;
 	private Date forDate;
-	private Company company;
-	private Employee employee;
+	private String companyName;
+	private String regNumber;
+	private String firstName;
+	private String lastName;
+	private int companyId;
+	private int employeeId;
 	
 	
 	public WeightDto() {
 		super();
 	}
 		
-
-	public WeightDto(int id, double quantity, Date forDate, Company company, Employee employee) {
+	
+	public WeightDto(int id, double quantity, Date forDate, String companyName, String regNumber, String firstName,
+			String lastName, int companyId, int employeeId) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.forDate = forDate;
-		this.company = company;
-		this.employee = employee;
-	
+		this.companyName = companyName;
+		this.regNumber = regNumber;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.companyId = companyId;
+		this.employeeId = employeeId;
 	}
+
+
+
+
 
 	public int getId() {
 		return id;
@@ -51,22 +63,58 @@ public class WeightDto {
 		this.forDate = forDate;
 	}
 
-	public Company getCompany() {
-		return company;
+	public String getCompanyName() {
+		return companyName;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public String getRegNumber() {
+		return regNumber;
 	}
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setRegNumber(String regNumber) {
+		this.regNumber = regNumber;
 	}
 
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+
+	public int getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
+	}
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
 
 	
 	

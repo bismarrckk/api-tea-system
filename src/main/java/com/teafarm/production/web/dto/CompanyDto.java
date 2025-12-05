@@ -18,7 +18,9 @@ public class CompanyDto {
 	@NotEmpty(message = "Registration number should not be null")
 	private String regNumber;
 	private double rate;
-	private User user;
+	private int userId;
+	private String firstName;
+	private String lastName;
 	private List<Weight> weight;
 	private List<Card> card;
 	
@@ -26,18 +28,30 @@ public class CompanyDto {
 		super();
 	}
 	
-	public CompanyDto(
-			int id,@NotEmpty(message = "Account name should not be null") @Size(min = 4, message = "Company name should have at least 3 characters") String name,
-			@NotEmpty(message = "Registration number should not be null") String regNumber,double rate, User user) {
+
+	public CompanyDto(int id,
+			@NotEmpty(message = "Account name should not be null") @Size(min = 3, message = "Company name should have at least 3 characters") String name,
+			@NotEmpty(message = "Registration number should not be null") String regNumber, double rate, int userId,
+			String firstName, String lastName, List<Weight> weight, List<Card> card) {
 		super();
-		this.id=id;
+		this.id = id;
 		this.name = name;
 		this.regNumber = regNumber;
 		this.rate = rate;
-		this.user = user;
+		this.userId = userId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.weight = weight;
+		this.card = card;
 	}
-	
-	
+
+
+
+
+
+
+
+
 
 	public int getId() {
 		return id;
@@ -71,12 +85,24 @@ public class CompanyDto {
 		this.rate = rate;
 	}
 
-	public User getUser() {
-		return user;
+
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 
@@ -94,6 +120,14 @@ public class CompanyDto {
 
 	public void setCard(List<Card> card) {
 		this.card = card;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	
 	

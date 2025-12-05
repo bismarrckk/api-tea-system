@@ -1,13 +1,9 @@
 package com.teafarm.production.web.dto;
 
-
-
-public interface Salary {
-	
+public interface SalaryDue {
 	String getFirstName();
 	String getLastName();
 	String  getQuantityTotal();
-	String getGrossSalary();
-	String getCreditTotal();
-
+	String getTotalAmountDue();
+	
 }

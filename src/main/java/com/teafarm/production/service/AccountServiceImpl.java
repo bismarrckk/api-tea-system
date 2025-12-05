@@ -1,6 +1,7 @@
 package com.teafarm.production.service;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -8,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,11 @@ import org.springframework.stereotype.Service;
 import com.teafarm.production.entity.Account;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.AccountRepo;
+import com.teafarm.production.util.VerificationCodeUtil;
 import com.teafarm.production.web.dto.AccountDto;
+import com.teafarm.production.web.dto.VerificationRequest;
 
-import net.bytebuddy.utility.RandomString;
+
 
 @Service
 public class AccountServiceImpl implements AccountService{
@@ -30,19 +34,22 @@ public class AccountServiceImpl implements AccountService{
 
 	@Override
 	public Account addAccount(AccountDto accDto,String siteURL) {
-		String randomCode=RandomString.make(64);
-		accDto.setVerificationCode(randomCode);
-		Account acc=modelMapper.map(accDto, Account.class);	
+		String verificationCode = VerificationCodeUtil.generateCode(6);
+		accDto.setVerificationCode(verificationCode);
 		
+		Account acc=modelMapper.map(accDto, Account.class);	
+		acc.setVerificationExpiry(LocalDateTime.now().plusMinutes(20));
+		acc.setCreatedBy(accDto.getEmail());
+		acc.setActive(false);
 		try {
-			sendVerificationEmail(accDto,siteURL);
+			sendVerificationEmail(accDto);
 		} catch (UnsupportedEncodingException | MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return accountRepo.save(acc);
 	}
-
+	
 	@Override
 	public Account getAccountByName(String name) throws ResourceNotFoundException{
 		// TODO Auto-generated method stub
@@ -69,32 +76,19 @@ public class AccountServiceImpl implements AccountService{
 		Account account=accountRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Account"+id+" not available!!"));
 		return account;
 	}
-	
-	@Override
-	public Boolean verifyCode(String code) {
-		Account acc=accountRepo.findByVerificationCode(code);
-		if (acc == null || acc.isActive()) {
-	        return false;
-	    } else {
-	        acc.setVerificationCode(null);
-	        acc.setActive(true);
-	        accountRepo.save(acc);
-	         
-	        return true;
-	    }
-	}
+
 
 	@Override
-	public void sendVerificationEmail(AccountDto accDto, String siteURL) throws UnsupportedEncodingException, MessagingException {
-		    String toAddress = accDto.getEmail();
-		    String fromAddress = "b77kibet@gmail.com";
-		    String senderName = "TeaFarm";
-		    String subject = "Please verify your account";
-		    String content = "Dear [[name]],<br>"
-		            + "Thankyou for registering with us,Please click the link below to verify your account:<br>"
-		            + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+	public void sendVerificationEmail(AccountDto accDto) throws UnsupportedEncodingException, MessagingException {
+		    String toAddress = "bismarckmetet@gmail.com";
+		    String fromAddress = "bismarckmetet@gmail.com";
+		    String senderName = "Tea Farm Managememt System";
+		    String subject = "Account verification";
+		    String content = "Dear [[name]],<br><br>"
+		            + "Thanks for signing up! Enter the code below to verify your account and get started. Please note that the code expires in 20 minutes<br>"
+		            + "<h3>[[code]]</h3>"
 		            + "Thank you,<br>"
-		            + "TeaFarm";
+		            + "Tea Farm Managememt System";
 		    
 		   
 		    MimeMessage message = javaMailSender.createMimeMessage();
@@ -110,10 +104,10 @@ public class AccountServiceImpl implements AccountService{
 		    helper.setTo(toAddress);
 		    helper.setSubject(subject);
 		     
-		    content = content.replace("[[name]]", accDto.getAlias());
-		    String verifyURL = siteURL + "/accounts/verify?code=" + accDto.getVerificationCode();
+		    content = content.replace("[[name]]", accDto.getFirstName());
+		    String code = accDto.getVerificationCode();
 		     
-		    content = content.replace("[[URL]]", verifyURL);
+		    content = content.replace("[[code]]", code);
 		     
 		    helper.setText(content, true);
 		     
@@ -122,6 +116,26 @@ public class AccountServiceImpl implements AccountService{
 		    
 		    
 		
+	}
+
+	@Override
+	public ResponseEntity<?> verify(VerificationRequest request) {
+		Account acc=accountRepo.findByVerificationCode(request.getCode());
+		if (acc == null || acc.isActive() ||  acc.getVerificationExpiry().isBefore(LocalDateTime.now())) {
+			 return ResponseEntity.badRequest().body("Verification code expired");
+	    } 
+		 if (!request.getCode().equals(acc.getVerificationCode())) {
+		        return ResponseEntity.badRequest().body("Invalid verification code");
+		 }
+		
+	        acc.setVerificationCode(null);
+	        acc.setActive(true);
+	        acc.setVerificationExpiry(null);
+	        
+	        accountRepo.save(acc);
+	         
+	        return ResponseEntity.ok("Account verified successfully");
+	   
 	}
 
 }

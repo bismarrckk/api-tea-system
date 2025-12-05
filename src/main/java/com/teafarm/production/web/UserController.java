@@ -2,6 +2,8 @@ package com.teafarm.production.web;
 
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,15 +24,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teafarm.production.entity.Account;
+import com.teafarm.production.entity.Role;
 import com.teafarm.production.entity.User;
 import com.teafarm.production.exception.ResourceNotFoundException;
+import com.teafarm.production.repository.RoleRepo;
 import com.teafarm.production.service.AccountService;
 import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.UserDto;
 
 @RestController    
-@RequestMapping("/api/v1/users/")
-@CrossOrigin("http://localhost:8080/")
+@RequestMapping("/users")
+@CrossOrigin("*")
 public class UserController {
 	@Autowired
 	UserService userService;
@@ -37,6 +42,8 @@ public class UserController {
 	ModelMapper modelMapper;
 	@Autowired
 	AccountService accService;
+	@Autowired
+	RoleRepo roleRepo;
 
 	
 	@GetMapping
@@ -52,8 +59,9 @@ public class UserController {
 		}
 		return "auth is null";
 	}
+	
 	@GetMapping("{id}")
-	public UserDto getUserById(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public UserDto getUserById(@PathVariable int id) throws ResourceNotFoundException{
 		User user=userService.getUserById(id);
 		UserDto userResponse=modelMapper.map(user, UserDto.class);
 		return userResponse;
@@ -67,28 +75,32 @@ public class UserController {
 		return true;
 	}
 	@GetMapping("account/{accountId}")
-	public List<User> getUsersByAccount(@PathVariable(name="accountId") int accountId)
+	public List<UserDto> getUsersByAccount(@PathVariable int accountId)
 			throws ResourceNotFoundException{
 		Account acc=accService.getAccountById(accountId);
 		List<User> users=userService.getUserByAccount(acc);
-		return users;
+		List<UserDto> dto=modelMapper.map(users, new TypeToken<List<UserDto>>() {}.getType());
+//		for(int i=0;i<users.size();i++) {
+//			
+//		}
+		return dto;
 		
 	}
 	//user account
-	@PostMapping
-	public UserDto addUserAccount(@Valid @RequestBody UserDto userDto)
-			throws ResourceNotFoundException{
-		User user=userService.getUserByEmail(userDto.getEmail());
-		if(user!=null) {
-			return  new UserDto();
-		}
-		Account account=accService.getAccountByName(userDto.getAccountName());
-		userDto.setAccount(account);
-		User userr=userService.addUser(userDto);
-		UserDto userResponse=modelMapper.map(userr,UserDto.class);
-		return userResponse;
-	}
-	//user
+//	@PostMapping
+//	public UserDto addUserAccount(@Valid @RequestBody UserDto userDto)
+//			throws ResourceNotFoundException{
+//		User user=userService.getUserByEmail(userDto.getEmail());
+//		if(user!=null) {
+//			return  new UserDto();
+//		}
+//		Account account=accService.getAccountByName(userDto.getAccountName());
+//		userDto.setAccount(account);
+//		User userr=userService.addUser(userDto);
+//		UserDto userResponse=modelMapper.map(userr,UserDto.class);
+//		return userResponse;
+//	}
+//	//user
 	@PostMapping("user")
 	public UserDto addUser(@Valid @RequestBody UserDto userDto)
 			throws ResourceNotFoundException{
@@ -97,22 +109,31 @@ public class UserController {
 			return new UserDto();
 		}
 		Account account=accService.getAccountById(userDto.getAccId());
-		userDto.setAccount(account);
-		User userr=userService.addUser(userDto);
+	
+		User userr=modelMapper.map(userDto,User.class);
+		userr.setAccount(account);
+		
+		Role role=roleRepo.findById(userDto.getRoleId()).get();
+		Collection<Role> roles=new ArrayList<>();
+		roles.add(role);
+		userr.setRoles(roles);
+		
+		userService.addUser(userr);
+		
 		UserDto userResponse=modelMapper.map(userr, UserDto.class);
 		return userResponse;
 	}
 	
-	@PutMapping("{id}")
-	public UserDto updateUser(@PathVariable(name="id") int id,@Valid @RequestBody UserDto userDto){
+	@PatchMapping("{id}")
+	public UserDto updateUser(@PathVariable int id,@Valid @RequestBody UserDto userDto) throws ResourceNotFoundException{
 	
-		User user=userService.updateUser(userDto);
+		User user=userService.updateUser(id,userDto);
 		UserDto userResponse=modelMapper.map(user, UserDto.class);
 		return userResponse;
 		
 	}
 	@DeleteMapping("{id}")
-	public void deleteUser(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public void deleteUser(@PathVariable  int id) throws ResourceNotFoundException{
 		userService.deleteUser(id);
 	
 		

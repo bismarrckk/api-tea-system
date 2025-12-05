@@ -16,6 +16,7 @@ public class CompanyServiceImpl  implements CompanyService{
 	@Autowired 
 	CompanyRepo companyRepo;
 	
+	
 	@Override
 	public List<Company> getAllCompanies() {
 		// TODO Auto-generated method stub
@@ -25,6 +26,7 @@ public class CompanyServiceImpl  implements CompanyService{
 	@Override
 	public Company addCompany(Company company) {
 		// TODO Auto-generated method stub
+
 		return companyRepo.save(company);
 	}
 
@@ -59,10 +61,6 @@ public class CompanyServiceImpl  implements CompanyService{
 		return companyRepo.findCompanyByAcc(id);
 	}
 
-	@Override
-	public List<DailySummary> getDailySummary(int id) {
-		// TODO Auto-generated method stub
-		return companyRepo.findDailySummary(id);
-	}
+	
 
 }

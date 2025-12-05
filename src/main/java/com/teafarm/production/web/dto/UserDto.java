@@ -1,36 +1,35 @@
 package com.teafarm.production.web.dto;
 
-import java.util.Collection;
 import java.sql.Date;
-
+import java.util.Collection;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.teafarm.production.entity.Account;
 import com.teafarm.production.entity.Role;
 
 public class UserDto {
 
 	private int id;
-	@NotEmpty(message = "Fullname should not be null")
+	@NotEmpty(message = "Firstname should not be null")
 	@Size(min = 4, message = "Fullname should have at least 4 characters")
-	private String fullname;
-	private long phone;
+	private String firstName;
+	private String lastName;
+	private String phone;
 	@Email
 	private String email;
 	private Date userLog;
 	private boolean enabled;
-	@NotEmpty(message = "Password should not be null")
-	@Size(min = 8, message = "Password should have at least 8 characters")
+//	@NotEmpty(message = "Password should not be null")
+//	@Size(min = 8, message = "Password should have at least 8 characters")
 	private String password;
-	private Account account;
+	
 	private String accountName;
 	private int accId;
-	private Collection<Role> roles;
-	private String role;
 
+	private int roleId;
+	private Collection<Role> roles;
 	
 	public UserDto() {
 		super();
@@ -39,28 +38,27 @@ public class UserDto {
 	
 	
 
+	
+
+
 	public UserDto(int id,
-			@NotEmpty(message = "Fullname should not be null") @Size(min = 4, message = "Fullname should have at least 4 characters") String fullname,
-			long phone, @Email String email, Date userLog,
-			boolean enabled,
-			@NotEmpty(message = "Password should not be null") @Size(min = 8, message = "Password should have at least 8 characters") String password,
-			Account account, String accountName, int accId, Collection<Role> roles, String role) {
+			@NotEmpty(message = "Fullname should not be null") @Size(min = 4, message = "Fullname should have at least 4 characters") String firstName,
+			String lastName, String phone, @Email String email, Date userLog, boolean enabled, String password,
+			String accountName, int accId, int roleId, Collection<Role> roles) {
 		super();
 		this.id = id;
-		this.fullname = fullname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.phone = phone;
 		this.email = email;
 		this.userLog = userLog;
 		this.enabled = enabled;
 		this.password = password;
-		this.account = account;
 		this.accountName = accountName;
 		this.accId = accId;
+		this.roleId = roleId;
 		this.roles = roles;
-		this.role = role;
 	}
-
-
 
 
 	public int getId() {
@@ -73,22 +71,33 @@ public class UserDto {
 	}
 
 
-	public String getFullname() {
-		return fullname;
+
+	public String getFirstName() {
+		return firstName;
 	}
 
 
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 
-	public long getPhone() {
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+
+	public String getPhone() {
 		return phone;
 	}
 
 
-	public void setPhone(long phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
@@ -131,16 +140,7 @@ public class UserDto {
 	}
 
 
-	public Account getAccount() {
-		return account;
-	}
-
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-
+	
 	public String getAccountName() {
 		return accountName;
 	}
@@ -151,14 +151,7 @@ public class UserDto {
 	}
 
 
-	public Collection<Role> getRoles() {
-		return roles;
-	}
 
-
-	public void setRoles(Collection<Role> roles) {
-		this.roles = roles;
-	}
 
 
 	public int getAccId() {
@@ -171,16 +164,38 @@ public class UserDto {
 	}
 
 
-	public String getRole() {
-		return role;
+
+
+	public int getRoleId() {
+		return roleId;
 	}
 
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
 	}
-	
-	
+
+
+
+
+
+
+
+	public Collection<Role> getRoles() {
+		return roles;
+	}
+
+
+
+
+
+
+
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
+	}
+
+
 		
 	
 }

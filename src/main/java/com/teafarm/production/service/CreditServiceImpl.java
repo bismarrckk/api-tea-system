@@ -1,5 +1,6 @@
 package com.teafarm.production.service;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.teafarm.production.entity.Credit;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.repository.CreditRepository;
+import com.teafarm.production.web.dto.CreditCommodityTotals;
+import com.teafarm.production.web.dto.CreditReport;
 
 @Service
 public class CreditServiceImpl implements CreditService{
@@ -50,5 +53,24 @@ public class CreditServiceImpl implements CreditService{
 		Credit credit=getCreditById(id);
 		creditRepo.delete(credit);
 	}
+
+	@Override
+	public List<Credit> getAllCredit() {
+		// TODO Auto-generated method stub
+		return creditRepo.findAll();
+	}
+
+	@Override
+	public List<CreditReport> getReport(Date start, Date end, int id) {
+		// TODO Auto-generated method stub
+		return creditRepo.findCreditReport(start, end, id);
+	}
+
+	@Override
+	public List<CreditCommodityTotals> getCommodityTotals(Date start, Date end, int id) {
+		// TODO Auto-generated method stub
+		return creditRepo.findAmountByCommodity(start, end, id);
+	}
+
 
 }

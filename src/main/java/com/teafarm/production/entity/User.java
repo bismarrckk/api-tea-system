@@ -2,11 +2,13 @@ package com.teafarm.production.entity;
 
 import java.util.Collection;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,24 +20,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 @Entity
 @Table(name="users")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	private String fullname;
-	private long phone;
+	private String firstName;
+	private String lastName;
+	private String phone;
 	@Column(unique=true)
 	private String email;
 	@Column(name="user_log")
 	private Date userLog;
 	private String password;
 	private boolean enabled;
-	@JsonManagedReference(value="company-user")
 	@OneToMany(mappedBy="user", cascade = {
 	        CascadeType.ALL
 	    })
@@ -52,43 +59,86 @@ public class User {
 			)
 	
 	private Collection<Role> roles;
+	@CreatedBy
+	 private String createdBy;
+    @LastModifiedBy
+	 private String updatedBy;
+    @CreatedDate
+	 private LocalDateTime createdAt;
+    @LastModifiedDate
+	 private LocalDateTime updatedAt;
 	
 	public User() {
 		super();
 	}
 		
-	public User(int id, String fullname, long phone, String email, Date userLog, boolean enabled,String password,Account account)
-			{
+	public User(int id, String firstName, String lastName, String phone, String email, Date userLog, String password,
+			boolean enabled, List<Company> companies, Account account, Collection<Role> roles, String createdBy,
+			String updatedBy, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
 		this.id = id;
-		this.fullname = fullname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.phone = phone;
 		this.email = email;
 		this.userLog = userLog;
+		this.password = password;
 		this.enabled = enabled;
-		this.password=password;
-		this.account=account;
-	
+		this.companies = companies;
+		this.account = account;
+		this.roles = roles;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
-	
+
+
+
+
+
+
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getFullname() {
-		return fullname;
+	
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	public long getPhone() {
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+
+
+	public String getPhone() {
 		return phone;
 	}
-	public void setPhone(long phone) {
+
+
+
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+
+
+
 	public String getEmail() {
 		return email;
 	}
@@ -141,6 +191,38 @@ public class User {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 		
 	

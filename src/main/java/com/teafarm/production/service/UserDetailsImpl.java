@@ -51,7 +51,7 @@ public class UserDetailsImpl implements UserDetails{
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
-		return true;
+		return user.getAccount().isExpired();
 	}
 
 	@Override

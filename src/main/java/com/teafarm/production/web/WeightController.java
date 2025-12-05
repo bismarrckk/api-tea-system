@@ -1,7 +1,8 @@
 package com.teafarm.production.web;
 
-import java.sql.Date;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -20,42 +21,69 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.teafarm.production.entity.Weight;
 import com.teafarm.production.exception.ResourceNotFoundException;
+import com.teafarm.production.service.CompanyService;
+import com.teafarm.production.service.EmployeeService;
 import com.teafarm.production.service.WeightService;
-import com.teafarm.production.web.dto.Salary;
 import com.teafarm.production.web.dto.WeightDto;
 
 @RestController
-@RequestMapping("/api/v1/weight/")
-@CrossOrigin("http://localhost:8080/")
+@RequestMapping("/weight")
+@CrossOrigin("*")
 public class WeightController {
 	@Autowired
 	WeightService weightService;
+	@Autowired
+	EmployeeService empService;
+	@Autowired
+	CompanyService companyService;
 	@Autowired
 	ModelMapper modelMapper;
 	
 	@GetMapping
 	public List<WeightDto> getAllWeights(){
 		List<Weight> weight= weightService.getAllWeight();
-		List<WeightDto> weightList=modelMapper.map(weight, new TypeToken<List<WeightDto>>() {}.getType());
-		return weightList;
+		List<WeightDto> weightDto=modelMapper.map(weight, new TypeToken<List<WeightDto>>() {}.getType());
+		for (int i = 0; i < weight.size(); i++) {
+            Weight wh = weight.get(i);
+            WeightDto dto = weightDto.get(i);
+          
+                dto.setCompanyName(wh.getCompany().getName());
+                dto.setFirstName(wh.getEmployee().getFirstName());
+		        dto.setLastName(wh.getEmployee().getLastName());
+                dto.setRegNumber(wh.getCompany().getRegNumber());   
+        }
+		return weightDto;
 	}
 	@GetMapping("account/{accId}")
-	public List<WeightDto> getWeightByAcc(@PathVariable(name="accId") int accId){
-		List<Weight> weights=weightService.getWeightByAccId(accId);
-		List<WeightDto> weightList=modelMapper.map(weights, new TypeToken<List<WeightDto>>() {}.getType());
-		return weightList;
+	public List<WeightDto> getWeightByAcc(@PathVariable int accId){
+		List<Weight> weight=weightService.getWeightByAccId(accId);
+		List<WeightDto> weightDtoList = weight.stream()
+			    .map(wh -> {
+			        WeightDto dto = modelMapper.map(wh, WeightDto.class);
+			        dto.setCompanyName(wh.getCompany().getName());
+			        dto.setFirstName(wh.getEmployee().getFirstName());
+			        dto.setLastName(wh.getEmployee().getLastName());
+			        dto.setRegNumber(wh.getCompany().getRegNumber());
+			        return dto;
+			    })
+			    .collect(Collectors.toList());
+		return weightDtoList;
 	}
 	
 	@GetMapping("{id}")
-	public Weight getWeightById(@PathVariable(value="id") int id) throws ResourceNotFoundException{
+	public WeightDto getWeightById(@PathVariable int id) throws ResourceNotFoundException{
 		Weight weight=weightService.getWeightById(id);
-		return weight;
+		WeightDto dto=modelMapper.map(weight, WeightDto.class);
+		 dto.setCompanyName(weight.getCompany().getName());
+		 dto.setFirstName(weight.getEmployee().getFirstName());
+	        dto.setLastName(weight.getEmployee().getLastName());
+         dto.setRegNumber(weight.getCompany().getRegNumber());
+         dto.setRegNumber(weight.getCompany().getRegNumber());
+         dto.setEmployeeId(weight.getEmployee().getId());
+         dto.setCompanyId(weight.getCompany().getId());
+		return dto;
 	}
-	@GetMapping("salary/{id}/{start}/{end}")
-	public List<Salary> getSalary(@PathVariable(value="id") int id,@PathVariable("start") Date start,@PathVariable ("end") Date end){
-		List<Salary> salary=weightService.getSalary(start, end,id);
-		return salary;
-	}
+	
 	@PostMapping
 	public WeightDto addWeight(@RequestBody WeightDto weightDto) {
 		//convert Dto to Entity
@@ -67,16 +95,18 @@ public class WeightController {
 		return weightResponse;
 	}
 	@PutMapping("{id}")
-	public WeightDto updateWeight(@Valid @RequestBody WeightDto weightDto,@PathVariable(name="id") int id)
+	public Weight updateWeight(@Valid @RequestBody WeightDto weightDto,@PathVariable int id)
 			throws ResourceNotFoundException{
 		Weight weightRequest=modelMapper.map(weightDto,Weight.class);
-		Weight weight=weightService.updateWeight(id, weightRequest);
-		WeightDto weightResponse=modelMapper.map(weight, WeightDto.class);
-		return weightResponse;
+		weightRequest.setEmployee(empService.getEmployeeById(weightDto.getEmployeeId()));
+		weightRequest.setCompany(companyService.getCompanyById(weightDto.getCompanyId()));
+		Weight weight=weightService.updateWeight(weightRequest);
+		
+		return weight;
 		
 	}
 	@DeleteMapping("{id}")
-	public void deletePost(@PathVariable(name = "id") int id) throws ResourceNotFoundException {
+	public void deletePost(@PathVariable int id) throws ResourceNotFoundException {
 		
 		weightService.deleteWeight(id);
 		

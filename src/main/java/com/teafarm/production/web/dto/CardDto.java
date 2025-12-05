@@ -11,21 +11,27 @@ public class CardDto {
 	@Min(value=1,message="Quantity should be greater than 1")
 	private double quantity;
 	private Date forDate;
-	private Company company;
+	private String companyName;
+	private String regNumber;
+	private int companyId;
 		
 	public CardDto() {
 		super();
 	}
 	
-	public CardDto(int id,@Min(value = 1, message = "Quantity should be greater than 1") double quantity, Date forDate,
-			Company company) {
+	public CardDto(int id, @Min(value = 1, message = "Quantity should be greater than 1") double quantity, Date forDate,
+			String companyName, String regNumber, int companyId) {
 		super();
-		this.id=id;
+		this.id = id;
 		this.quantity = quantity;
 		this.forDate = forDate;
-		this.company = company;
+		this.companyName = companyName;
+		this.regNumber = regNumber;
+		this.companyId = companyId;
 	}
-	
+
+
+
 
 	public int getId() {
 		return id;
@@ -51,13 +57,31 @@ public class CardDto {
 		this.forDate = forDate;
 	}
 
-	public Company getCompany() {
-		return company;
+	public String getCompanyName() {
+		return companyName;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
+
+	public String getRegNumber() {
+		return regNumber;
+	}
+
+	public void setRegNumber(String regNumber) {
+		this.regNumber = regNumber;
+	}
+
+	public int getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
+	}
+
+
 
 
 	

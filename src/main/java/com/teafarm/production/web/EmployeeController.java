@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,8 +31,8 @@ import com.teafarm.production.service.UserService;
 import com.teafarm.production.web.dto.EmployeeDto;
 
 @RestController
-@RequestMapping("/api/v1/employees/")
-@CrossOrigin("http://localhost:8080/")
+@RequestMapping("/employees")
+@CrossOrigin("*")
 public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
@@ -51,28 +52,28 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("{id}")
-	public Employee getEmployeeById(@PathVariable(name="id") int id) throws ResourceNotFoundException{
+	public EmployeeDto getEmployeeById(@PathVariable int id) throws ResourceNotFoundException{
 		Employee employee= employeeService.getEmployeeById(id);
-		return employee;
+		EmployeeDto empDto=modelMapper.map(employee,EmployeeDto.class);
+		return empDto;
 	}
 	@GetMapping("account/{accountId}")
-	public List<Employee> getEmployeesByAccount(@PathVariable(name="accountId") int accountId) throws ResourceNotFoundException{
+	public List<EmployeeDto> getEmployeesByAccount(@PathVariable int accountId) throws ResourceNotFoundException{
 		Account account=accService.getAccountById(accountId);
 		List<Employee> employees=employeeService.getEmployeesByAccount(account);
-		return employees;
+		List<EmployeeDto> employeeDto=modelMapper.map(employees, new TypeToken<List<EmployeeDto>>() {}.getType());
+		return employeeDto;
 	}
 	@PostMapping
 	public EmployeeDto addEmployee(@Valid @RequestBody EmployeeDto employeeDto,HttpServletRequest request) 
 			throws ResourceNotFoundException, ParseException{
-		Account account=accService.getAccountById(employeeDto.getAccId());
-		employeeDto.setAccount(account);
+		
 		Employee employee=employeeService.addEmployee(employeeDto);
 		EmployeeDto responseEmployee=modelMapper.map(employee,EmployeeDto.class);
-		
 		return responseEmployee;
 	}
 	
-	@PutMapping("{id}")
+	@PatchMapping("{id}")
 	public EmployeeDto updateEmployee(@Valid @RequestBody EmployeeDto employeeDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Employee requestEmployee=modelMapper.map(employeeDto, Employee.class);

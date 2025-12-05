@@ -1,6 +1,5 @@
 package com.teafarm.production.web.dto;
 
-import java.sql.Date;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -11,23 +10,34 @@ public class AccountDto {
 	@Size(min = 4, message = "Alias should have at least 4 characters")
 	private String alias;
 	private boolean active;
-	private Date regDate;
 	private String email;
 	private String verificationCode;
+	
+	private String firstName;
+	private String lastName;
+	private String phone;
+	private String password;
+
 	public AccountDto() {
 		super();
 	}
+	
 	public AccountDto(int id,
 			@NotEmpty(message = "Alias should not be null") @Size(min = 4, message = "Alias should have at least 4 characters") String alias,
-			boolean active, Date regDate,String email,String verificationCode) {
+			boolean active, String email, String verificationCode, String firstName, String lastName, String phone,
+			String password) {
 		super();
 		this.id = id;
 		this.alias = alias;
 		this.active = active;
-		this.regDate = regDate;
-		this.email=email;
-		this.verificationCode=verificationCode;
+		this.email = email;
+		this.verificationCode = verificationCode;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.password = password;
 	}
+
 	public int getId() {
 		return id;
 	}
@@ -45,14 +55,7 @@ public class AccountDto {
 	}
 	public void setActive(boolean active) {
 		this.active = active;
-	}
-	public Date getRegDate() {
-		return regDate;
-	}
-	public void setRegDate(Date regDate) {
-		this.regDate = regDate;
-	}
-	
+	}	
 	public String getEmail() {
 		return email;
 	}
@@ -64,6 +67,38 @@ public class AccountDto {
 	}
 	public void setVerificationCode(String verificationCode) {
 		this.verificationCode = verificationCode;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	
 	

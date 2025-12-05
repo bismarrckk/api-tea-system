@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teafarm.production.entity.Company;
+import com.teafarm.production.entity.User;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.service.CompanyService;
 import com.teafarm.production.service.UserService;
@@ -27,8 +28,8 @@ import com.teafarm.production.web.dto.DailySummary;
 
 
 @RestController
-@RequestMapping("/api/v1/companies/")
-@CrossOrigin("http://localhost:8080/")
+@RequestMapping("/companies")
+@CrossOrigin("*")
 public class CompanyController {
 	@Autowired
 	CompanyService companyService;
@@ -39,34 +40,57 @@ public class CompanyController {
 	
 	@GetMapping
 	public List<CompanyDto> getAllCompanies(){
-		List<Company> requestCompany=companyService.getAllCompanies();
-		List<CompanyDto> responseCompany=modelMapper.map(requestCompany,new TypeToken<List<CompanyDto>>() {}.getType());
-		return responseCompany;
+		List<Company> companies=companyService.getAllCompanies();
+		List<CompanyDto> companyDto=modelMapper.map(companies,new TypeToken<List<CompanyDto>>() {}.getType());
+		
+		for (int i = 0; i < companies.size(); i++) {
+            Company co = companies.get(i);
+            CompanyDto dto = companyDto.get(i);
+            if (co.getUser() != null) {
+                dto.setUserId(co.getUser().getId());
+                dto.setFirstName(co.getUser().getFirstName());
+                dto.setLastName(co.getUser().getLastName());
+            }
+        }
+		return companyDto;
 	}
 	
 	@GetMapping("{id}")
-	public Company getCompanyById(@PathVariable(value="id") int id) throws ResourceNotFoundException{
+	public CompanyDto getCompanyById(@PathVariable int id) throws ResourceNotFoundException{
 		Company company=companyService.getCompanyById(id);
-		return company;
+		CompanyDto companyDto=modelMapper.map(company, CompanyDto.class);
+		companyDto.setFirstName(company.getUser().getFirstName());
+		companyDto.setUserId(company.getUser().getId());
+		
+		return companyDto;
 	}
-	@GetMapping("account/{accId}")
-	public List<CompanyDto> getCompanyByAcc(@PathVariable(value="accId") int id){
+	@GetMapping("account/{id}")
+	public List<CompanyDto> getCompanyByAcc(@PathVariable int id){
 		
 		List<Company> companies=companyService.getCompanyByAcc(id);
-		List<CompanyDto> listCompanies=modelMapper.map(companies,new TypeToken<List<CompanyDto>>() {}.getType());
-		return listCompanies;
-	}
-	@GetMapping("summary/{id}")
-	public List<DailySummary> getSummary(@PathVariable("id") int id){
-		List<DailySummary> dailySummary=companyService.getDailySummary(id);
-		return dailySummary;
+		List<CompanyDto> companyDto=modelMapper.map(companies,new TypeToken<List<CompanyDto>>() {}.getType());
+		for (int i = 0; i < companies.size(); i++) {
+            Company co = companies.get(i);
+            CompanyDto dto = companyDto.get(i);
+            if (co.getUser() != null) {
+                dto.setUserId(co.getUser().getId());
+                dto.setFirstName(co.getUser().getFirstName());
+                dto.setLastName(co.getUser().getLastName());
+            }
+        }
+		return companyDto;
+
 	}
 	
+	
 	@PostMapping
-	public CompanyDto addCompany(@Valid @RequestBody CompanyDto companyDto,HttpServletRequest request) {
+	public CompanyDto addCompany(@Valid @RequestBody CompanyDto companyDto,HttpServletRequest request) throws ResourceNotFoundException {
 		//convert Dto to Entity
 		Company companyRequest=modelMapper.map(companyDto,Company.class);
+		User user=userService.getUserById(companyDto.getUserId());
+		companyRequest.setUser(user);
 		Company company=companyService.addCompany(companyRequest);
+		
 		//convert Entity to Dto
 		CompanyDto companyResponse=modelMapper.map(company, CompanyDto.class);
 		
@@ -76,6 +100,8 @@ public class CompanyController {
 	public CompanyDto updateCompany(@Valid @RequestBody CompanyDto companyDto,@PathVariable(name="id") int id)
 			throws ResourceNotFoundException{
 		Company companyRequest=modelMapper.map(companyDto,Company.class);
+		User user=userService.getUserById(companyDto.getUserId());
+		companyRequest.setUser(user);
 		Company company=companyService.updateCompany(id, companyRequest);
 		CompanyDto companyResponse=modelMapper.map(company, CompanyDto.class);
 		return companyResponse;

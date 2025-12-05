@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teafarm.production.entity.Card;
+import com.teafarm.production.entity.Weight;
 import com.teafarm.production.exception.ResourceNotFoundException;
 import com.teafarm.production.service.CardService;
 import com.teafarm.production.web.dto.CardDto;
+import com.teafarm.production.web.dto.WeightDto;
 
 @RestController
-@RequestMapping("/api/v1/cards/")
-@CrossOrigin("http://localhost:8080/")
+@RequestMapping("/cards")
+@CrossOrigin("*")
 public class CardController {
 	@Autowired
 	CardService cardService;
@@ -34,31 +36,56 @@ public class CardController {
 	@GetMapping
 	public List<CardDto> getAllCards(){
 		List<Card> card= cardService.getAllCards();
-		List<CardDto> cardList=modelMapper.map(card, new TypeToken<List<CardDto>>() {}.getType());
-		return cardList;
+		List<CardDto> cardDto=modelMapper.map(card, new TypeToken<List<CardDto>>() {}.getType());
+		for (int i = 0; i < card.size(); i++) {
+            Card cd = card.get(i);
+            CardDto dto = cardDto.get(i);
+            	
+            	dto.setCompanyId(cd.getCompany().getId());
+                dto.setCompanyName(cd.getCompany().getName());
+                dto.setRegNumber(cd.getCompany().getRegNumber());
+                
+            
+        }
+		return cardDto;
 	}
 	@GetMapping("account/{accId}")
-	public List<CardDto> getCardByAcc(@PathVariable(name="accId") int accId){
+	public List<CardDto> getCardByAcc(@PathVariable int accId){
 		List<Card> card= cardService.getCardByAcc(accId);
 		List<CardDto> cardList=modelMapper.map(card, new TypeToken<List<CardDto>>() {}.getType());
+		for (int i = 0; i < card.size(); i++) {
+            Card cd = card.get(i);
+            CardDto dto = cardList.get(i);
+            	
+            	dto.setCompanyId(cd.getCompany().getId());
+                dto.setCompanyName(cd.getCompany().getName());
+                dto.setRegNumber(cd.getCompany().getRegNumber());
+                
+            
+        }
 		return cardList;
 	}
 	@GetMapping("{id}")
-	public Card getCardById(@PathVariable(value="id") int id) throws ResourceNotFoundException{
+	public CardDto getCardById(@PathVariable int id) throws ResourceNotFoundException{
 		Card card=cardService.getCardById(id);
-		return card;
+		CardDto cardDto=modelMapper.map(card,CardDto.class);
+		cardDto.setCompanyId(card.getCompany().getId());
+        cardDto.setCompanyName(card.getCompany().getName());
+        cardDto.setRegNumber(card.getCompany().getRegNumber());
+		return cardDto;
 	}
 	@PostMapping
 	public CardDto addCard(@RequestBody CardDto cardDto) {
 		//convert Dto to Entity
 		Card cardRequest=modelMapper.map(cardDto,Card.class);
+		
 		Card card=cardService.addCard(cardRequest);
 		//convert Entity to Dto
 		CardDto cardResponse=modelMapper.map(card, CardDto.class);
 		return cardResponse;
 	}
 	@PutMapping("{id}")
-	public CardDto updateCard(@Valid @RequestBody CardDto cardDto,@PathVariable(name="id") int id)
+	public CardDto updateCard(@Valid @RequestBody CardDto cardDto,@PathVariable int id)
 			throws ResourceNotFoundException{
 		Card cardRequest=modelMapper.map(cardDto,Card.class);
 		Card card=cardService.updateCard(id, cardRequest);
@@ -67,7 +94,7 @@ public class CardController {
 		
 	}
 	@DeleteMapping("{id}")
-	public void deletePost(@PathVariable(name = "id") int id) throws ResourceNotFoundException {
+	public void deletePost(@PathVariable int id) throws ResourceNotFoundException {
 		
 		cardService.deleteCard(id);
 

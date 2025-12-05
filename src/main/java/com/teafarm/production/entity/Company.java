@@ -14,8 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="companies")
@@ -27,16 +28,14 @@ public class Company {
 	@Column(name="reg_number")
 	private String regNumber;
 	private double rate;
-	@JsonBackReference(value="company-user")
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id")
 	private User user;
-	@JsonManagedReference(value="company-weight")
+	
 	@OneToMany(mappedBy="company",cascade= {
 			CascadeType.ALL
 	})
 	private List<Weight> weight;
-	@JsonManagedReference(value="company-cards")
 	@OneToMany(mappedBy="company",cascade= {
 			CascadeType.ALL
 	})

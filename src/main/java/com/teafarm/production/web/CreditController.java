@@ -23,8 +23,8 @@ import com.teafarm.production.service.CreditService;
 import com.teafarm.production.web.dto.CreditDto;
 
 @RestController
-@RequestMapping("/api/v1/credits/")
-@CrossOrigin("http://localhost:8080/")
+@RequestMapping("/credits")
+@CrossOrigin("*")
 public class CreditController {
 	@Autowired
 	CreditService creditService;
@@ -32,15 +32,24 @@ public class CreditController {
 	ModelMapper mapper;
 	
 	@GetMapping("account/{id}")
-	public List<CreditDto> getCreditsByAcc(@PathVariable(value="id") int id){
+	public List<CreditDto> getCreditsByAcc(@PathVariable int id){
 		List<Credit> credit= creditService.getCreditsByAcc(id);
-		List<CreditDto> creditList=mapper.map(credit,  new TypeToken<List<CreditDto>>() {}.getType());
-		return creditList;
+		List<CreditDto> creditDto=mapper.map(credit,  new TypeToken<List<CreditDto>>() {}.getType());
+		for(int i=0;i<credit.size();i++) {
+			Credit cr=credit.get(i);
+			CreditDto dto=creditDto.get(i);
+			
+			dto.setFirstName(cr.getEmployee().getFirstName());
+			dto.setLastName( cr.getEmployee().getLastName());
+			dto.setEmployeeId(cr.getEmployee().getId());
+		}
+		return creditDto;
 	}
 	@GetMapping("{id}")
-	public Credit getCreditById(@PathVariable(value="id") int id) throws ResourceNotFoundException{ 
+	public CreditDto getCreditById(@PathVariable int id) throws ResourceNotFoundException{ 
 		Credit credit=creditService.getCreditById(id);
-		return credit;
+		CreditDto crDto=mapper.map(credit, CreditDto.class);
+		return crDto;
 	}
 	@PostMapping
 	public CreditDto addCredit(@Valid @RequestBody CreditDto creditDto){
